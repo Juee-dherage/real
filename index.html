@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>K.K. Wagh Engineering College | Academic Excellence</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+          "surface-variant": "#e0e3e6",
+          "primary-container": "#800000",
+          "on-surface": "#191c1e",
+          "on-tertiary-container": "#94a0ff",
+          "background": "#f7f9fc",
+          "secondary": "#3a5f94",
+          "inverse-surface": "#2d3133",
+          "on-secondary": "#ffffff",
+          "surface-container": "#eceef1",
+          "on-tertiary-fixed-variant": "#1830c2",
+          "on-primary-fixed": "#410000",
+          "tertiary-fixed-dim": "#bcc2ff",
+          "on-secondary-container": "#294f83",
+          "primary": "#570000",
+          "outline": "#8e706c",
+          "tertiary-fixed": "#dfe0ff",
+          "secondary-fixed-dim": "#a7c8ff",
+          "tertiary": "#00137f",
+          "inverse-on-surface": "#eff1f4",
+          "surface-container-lowest": "#ffffff",
+          "surface-container-high": "#e6e8eb",
+          "surface-tint": "#b22b1d",
+          "secondary-container": "#9fc2fe",
+          "error-container": "#ffdad6",
+          "surface-container-low": "#f2f4f7",
+          "tertiary-container": "#0021b9",
+          "outline-variant": "#e2bfb9",
+          "inverse-primary": "#ffb4a8",
+          "secondary-fixed": "#d5e3ff",
+          "on-primary": "#ffffff",
+          "on-primary-container": "#ff8371",
+          "primary-fixed-dim": "#ffb4a8",
+          "surface-dim": "#d8dadd",
+          "on-error-container": "#93000a",
+          "on-secondary-fixed-variant": "#1f477b",
+          "surface-bright": "#f7f9fc",
+          "surface": "#f7f9fc",
+          "on-primary-fixed-variant": "#8f0f07",
+          "on-tertiary": "#ffffff",
+          "on-error": "#ffffff",
+          "primary-fixed": "#ffdad4",
+          "on-secondary-fixed": "#001b3c",
+          "error": "#ba1a1a",
+          "on-background": "#191c1e",
+          "on-surface-variant": "#5a413d",
+          "surface-container-highest": "#e0e3e6",
+          "on-tertiary-fixed": "#000c61"
+        },
+        "borderRadius": {
+          "DEFAULT": "0.125rem",
+          "lg": "0.25rem",
+          "xl": "0.5rem",
+          "full": "0.75rem"
+        },
+        "fontFamily": {
+          "headline": ["Manrope"],
+          "body": ["Work Sans"],
+          "label": ["Work Sans"]
+        }
+      },
+    },
+  }
+</script>
+<style>
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  }
+  .hero-gradient {
+    background: linear-gradient(135deg, #570000 0%, #800000 100%);
+  }
+
+  /* ── Chatbot Modal ── */
+  #chat-modal {
+    display: none;
+    position: fixed;
+    bottom: 96px;
+    right: 32px;
+    width: 360px;
+    max-height: 520px;
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+    z-index: 100;
+    flex-direction: column;
+    overflow: hidden;
+    font-family: 'Work Sans', sans-serif;
+  }
+  #chat-modal.open { display: flex; }
+
+  #chat-header {
+    background: linear-gradient(135deg, #570000, #800000);
+    color: white;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  #chat-header span.material-symbols-outlined {
+    font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    font-size: 28px;
+  }
+  #chat-header-text { flex: 1; }
+  #chat-header-text h3 { font-size: 15px; font-weight: 700; margin: 0; }
+  #chat-header-text p  { font-size: 12px; opacity: 0.8; margin: 0; }
+  #close-chat { background: none; border: none; color: white; cursor: pointer; font-size: 22px; line-height: 1; }
+
+  #chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: #f7f9fc;
+  }
+
+  .msg { max-width: 85%; padding: 10px 14px; border-radius: 16px; font-size: 13.5px; line-height: 1.5; }
+  .msg.bot { background: #ffffff; border: 1px solid #e2bfb9; color: #191c1e; align-self: flex-start; border-radius: 4px 16px 16px 16px; }
+  .msg.user { background: #570000; color: white; align-self: flex-end; border-radius: 16px 4px 16px 16px; }
+  .msg.error { background: #ffdad6; color: #93000a; border: 1px solid #f5b4af; }
+  .msg.loading { opacity: 0.6; font-style: italic; }
+
+  #chat-buttons {
+    padding: 12px 16px;
+    background: #ffffff;
+    border-top: 1px solid #e2bfb9;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .chat-btn {
+    background: #f2f4f7;
+    border: 1.5px solid #e2bfb9;
+    color: #570000;
+    font-size: 12.5px;
+    font-weight: 600;
+    padding: 10px 8px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+    font-family: 'Work Sans', sans-serif;
+    text-align: center;
+  }
+  .chat-btn:hover { background: #ffdad4; transform: scale(1.02); }
+  .chat-btn:active { transform: scale(0.97); }
+</style>
+</head>
+
+<body class="bg-background font-body text-on-surface">
+
+<!-- ── Top Navigation Bar ── -->
+<nav class="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md docked full-width top-0 sticky z-50">
+  <div class="flex justify-between items-center w-full px-8 py-4 max-w-7xl mx-auto">
+    <div class="text-xl font-bold tracking-tight text-red-900 dark:text-red-500 font-headline">
+      K.K. Wagh Engineering
+    </div>
+    <div class="hidden md:flex items-center space-x-8">
+      <a class="text-red-900 dark:text-red-400 font-bold border-b-2 border-red-900 dark:border-red-500 pb-1 font-label" href="#">Home</a>
+      <a class="text-slate-600 dark:text-slate-400 font-medium hover:text-red-800 dark:hover:text-red-300 transition-colors duration-200 font-label" href="#">Admissions</a>
+      <a class="text-slate-600 dark:text-slate-400 font-medium hover:text-red-800 dark:hover:text-red-300 transition-colors duration-200 font-label" href="#">Departments</a>
+      <a class="text-slate-600 dark:text-slate-400 font-medium hover:text-red-800 dark:hover:text-red-300 transition-colors duration-200 font-label" href="#">Campus</a>
+    </div>
+    <div class="flex items-center space-x-4">
+      <button class="text-red-900 dark:text-red-500 p-2">
+        <span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ── Main Content Area ── -->
+<main class="relative">
+
+  <!-- Hero Section -->
+  <section class="relative min-h-[870px] flex items-center overflow-hidden">
+    <div class="absolute inset-0 z-0">
+      <div class="absolute inset-0 bg-primary/40 mix-blend-multiply z-10"></div>
+      <img alt="Campus Aerial" class="w-full h-full object-cover"
+        src="https://lh3.googleusercontent.com/aida-public/AB6AXuAxwddT5KfGHZLiOJ7dNH0Xsk3eL85HQJn58uIgS0v7fuV7c8NyhSrpnDczZSoAIlQK7-RveflnAFEjXMCuYpBMFLrs1Hk2uUfrrRqkdEf4103W2fBje9cm9fwTeGVO1geLcQYnPSUu3eyHe_J6RZIIIHR6Cy-hWWGKXjtsnU4xu4ke7wrvw3hIEjZ2UbuBXt1OFbhxDGUXUwJGdMRSs7rbJRBY11GeAJwnaI-RrkYyGk6VyBL_xSGg9asK4t9VsKoiCr7g_IiJ4g"/>
+    </div>
+    <div class="max-w-7xl mx-auto px-8 w-full relative z-20 flex flex-col items-start">
+      <div class="max-w-2xl bg-white/10 backdrop-blur-xl p-10 rounded-full border border-white/20 shadow-2xl">
+        <h1 class="text-5xl md:text-7xl font-extrabold font-headline text-white leading-tight mb-6">
+          Engineering <br/><span class="text-secondary-container">Tomorrow's</span> Pioneers.
+        </h1>
+        <p class="text-xl text-white/90 font-light mb-8 max-w-lg leading-relaxed">
+          A legacy of excellence in technical education, producing engineers who shape the world's most complex challenges.
+        </p>
+        <div class="flex flex-wrap gap-4">
+          <button onclick="openChat()" class="bg-white text-primary px-8 py-4 rounded-full font-extrabold text-base shadow-lg hover:scale-105 active:scale-95 transition-all flex items-center gap-2">
+            Ask Chatbot <span class="material-symbols-outlined">smart_toy</span>
+          </button>
+          <button class="bg-white/20 text-white px-8 py-4 rounded-full font-semibold border border-white/30 backdrop-blur-md hover:bg-white/30 transition-all">
+            Explore Campus
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats / Highlights -->
+  <section class="py-16 bg-surface-container">
+    <div class="max-w-7xl mx-auto px-8 grid grid-cols-1 md:grid-cols-12 gap-8">
+      <div class="md:col-span-3 bg-primary text-white p-10 rounded-full flex flex-col justify-between">
+        <span class="material-symbols-outlined text-on-primary-container text-4xl mb-4">history_edu</span>
+        <div>
+          <h3 class="text-5xl font-extrabold font-headline">40+</h3>
+          <p class="text-white/70 mt-2 font-body">Years of Academic Excellence</p>
+        </div>
+      </div>
+      <div class="md:col-span-5 bg-secondary-fixed p-12 rounded-full flex flex-col justify-between">
+        <div class="bg-white/50 w-16 h-16 rounded-full flex items-center justify-center mb-6">
+          <span class="material-symbols-outlined text-primary text-3xl">verified</span>
+        </div>
+        <div>
+          <h3 class="text-2xl font-bold font-headline text-on-secondary-fixed mb-4">Accredited Authority</h3>
+          <p class="text-on-secondary-fixed-variant leading-relaxed font-body">
+            Ranked consistently among the top private engineering institutions in Maharashtra, with NBA accreditation across multiple disciplines.
+          </p>
+        </div>
+      </div>
+      <div class="md:col-span-4 bg-surface-container-low p-8 rounded-full">
+        <span class="material-symbols-outlined text-primary mb-4">biotech</span>
+        <h4 class="font-bold text-xl font-headline mb-2">Research Labs</h4>
+        <p class="text-sm text-slate-600 font-body">24/7 access to state-of-the-art facilities for innovation and prototyping.</p>
+      </div>
+      <div class="md:col-span-4 bg-surface-container-low p-8 rounded-full">
+        <span class="material-symbols-outlined text-primary mb-4">diversity_3</span>
+        <h4 class="font-bold text-xl font-headline mb-2">Industry Ties</h4>
+        <p class="text-sm text-slate-600 font-body">Strong partnerships with Tier-1 engineering firms for internships and placement.</p>
+      </div>
+      <div class="md:col-span-4 bg-surface-container-low p-8 rounded-full">
+        <span class="material-symbols-outlined text-primary mb-4">workspace_premium</span>
+        <h4 class="font-bold text-xl font-headline mb-2">Skill Certifications</h4>
+        <p class="text-sm text-slate-600 font-body">Integrated global certification programs within the core curriculum.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Department Highlight -->
+  <section class="py-20 bg-surface-container-low">
+    <div class="max-w-7xl mx-auto px-8">
+      <div class="flex flex-col md:flex-row justify-between items-end mb-12">
+        <div class="max-w-xl">
+          <h2 class="text-3xl font-extrabold font-headline text-primary mb-4">Academic Departments</h2>
+          <p class="text-on-surface-variant font-body">Specialized schools focusing on the future of infrastructure, computing, and sustainable energy.</p>
+        </div>
+        <a class="text-primary font-bold flex items-center gap-2 hover:underline font-label mt-4 md:mt-0" href="#">
+          View All Departments <span class="material-symbols-outlined">chevron_right</span>
+        </a>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="group relative overflow-hidden rounded-full h-96">
+          <img alt="Computer Science" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBl0Vz78cCDvj3NDjV4Ol-E7UM0h83S3V9IwyrPQsWMszaCQjhLmvlkyoV_NRVuAhf6FXMWaEKkKCbyMdaa6GJeXuOeuRqtTzVN8gYmijzTBxfAdtx4dh7-j6o8HtTNuEJ2gHRm8l60E4IeqX-lzVLUDEFhufpz-yzIDcarBPTN1nB5FReWqCBiZNEO2scfO1f3iP2KYfVS4siPfqX12V_KJQiRwVo74Qj9D4eu485sMnzlCqEDpZasMc1hg5Eof9ZBV_FRMj9O1g"/>
+          <div class="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/20 to-transparent flex flex-col justify-end p-8">
+            <h4 class="text-white font-bold text-2xl font-headline">Computer Engineering</h4>
+            <p class="text-white/80 text-sm mt-2 font-body">AI, Machine Learning, and Cybersecurity specializations.</p>
+          </div>
+        </div>
+        <div class="group relative overflow-hidden rounded-full h-96">
+          <img alt="Mechanical Engineering" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAPydLXP5YefQemesspi85czc0PvpqD8xaU0ZOuidxnSsQZMhEmtETIYr6k4J9aG_9RV2h6scQSTSSdLtAEByQ-sxJ7UiqTfVF1Ax-QAEPjaLfQKljVQaJdQQbI_43hly0lDmUIQs4Nc7cfaC3oCRmaqWK6ID9HZx3WT0Z9wT8YKYeob-YwfVdfe3O14FmYnVSAiw-3wFwPYeMDZzInsiUvDPJ9mgLMcvNodT8Ovrw7vP6LuC8PKDYjrA7geyi1vGcX2QZskk946A"/>
+          <div class="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/20 to-transparent flex flex-col justify-end p-8">
+            <h4 class="text-white font-bold text-2xl font-headline">Mechanical Engineering</h4>
+            <p class="text-white/80 text-sm mt-2 font-body">Robotics, Automotive Design, and Thermal Systems.</p>
+          </div>
+        </div>
+        <div class="group relative overflow-hidden rounded-full h-96">
+          <img alt="Civil Engineering" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDnhhWY63zXtf0_3Mre7B9jC6ATsh7yxvbUnNvRcNLiXrvyIhNlky-kw4LcfHjiKzUYQvcZuiaBc7jzS9zrkpJBYN3DAwvywOQ4XR7U6NhSujgcmmurYN4girkFIq7dKSG3Up3PEIks5bcGoB19IcZGsMrTMVXq-F-qSRPeaVmc83CON3JlFd4SsnM8M4BVWT0OVl-mwj8qkXwr7FeP859E3NLgMwEaBKBAkd9SKG4BN4l1eoH0fUrL9IfEBEahGB6V5kPKcs0JPw"/>
+          <div class="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/20 to-transparent flex flex-col justify-end p-8">
+            <h4 class="text-white font-bold text-2xl font-headline">Civil Engineering</h4>
+            <p class="text-white/80 text-sm mt-2 font-body">Sustainable Infrastructure and Structural Dynamics.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="py-24 px-8">
+    <div class="max-w-5xl mx-auto hero-gradient rounded-full p-12 md:p-20 relative overflow-hidden text-center shadow-2xl">
+      <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+      <div class="absolute bottom-0 left-0 w-64 h-64 bg-white/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
+      <div class="relative z-10 flex flex-col items-center">
+        <div class="bg-white/20 p-4 rounded-full mb-8 inline-block backdrop-blur-md border border-white/30">
+          <span class="material-symbols-outlined text-white text-5xl" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
+        </div>
+        <h2 class="text-3xl md:text-5xl font-extrabold font-headline text-white mb-6">Need Instant Information?</h2>
+        <p class="text-xl text-white/80 font-light mb-10 max-w-2xl mx-auto leading-relaxed">
+          Our intelligent assistant is ready to help you with fees, principal info, and department heads. Get answers in seconds.
+        </p>
+        <button onclick="openChat()" class="bg-white text-primary px-12 py-5 rounded-full font-extrabold text-lg shadow-xl hover:scale-105 active:scale-95 transition-all flex items-center gap-3">
+          Open Chatbot
+          <span class="material-symbols-outlined">forum</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ── Chatbot Modal ── -->
+<div id="chat-modal">
+  <div id="chat-header">
+    <span class="material-symbols-outlined">smart_toy</span>
+    <div id="chat-header-text">
+      <h3>Wagh Assistant</h3>
+      <p>Ask me anything about the college</p>
+    </div>
+    <button id="close-chat" onclick="closeChat()">&#x2715;</button>
+  </div>
+
+  <div id="chat-messages">
+    <div class="msg bot">👋 Hello! I'm your K.K. Wagh college assistant. Click a button below to get instant answers!</div>
+  </div>
+
+  <div id="chat-buttons">
+    <button class="chat-btn" onclick="askQuestion('fees', '💰 What are the fees?')">💰 What are the fees?</button>
+    <button class="chat-btn" onclick="askQuestion('principal', '🎓 Who is the Principal?')">🎓 Who is the Principal?</button>
+    <button class="chat-btn" onclick="askQuestion('hod-computer', '💻 Computer HOD?')">💻 Computer HOD?</button>
+    <button class="chat-btn" onclick="askQuestion('hod-applied', '🔬 Applied Science HOD?')">🔬 Applied Science HOD?</button>
+  </div>
+</div>
+
+<!-- ── Floating Action Button ── -->
+<div class="fixed bottom-8 right-8 z-[60]">
+  <button onclick="openChat()" class="bg-primary text-white w-16 h-16 rounded-full shadow-2xl flex items-center justify-center hover:bg-primary-container transition-all group overflow-hidden">
+    <span class="material-symbols-outlined text-3xl group-hover:hidden">chat</span>
+    <span class="hidden group-hover:block font-bold text-xs uppercase tracking-tighter">Ask Wagh</span>
+  </button>
+</div>
+
+<!-- ── Footer ── -->
+<footer class="bg-slate-50 dark:bg-slate-950 w-full py-12 px-8 flex flex-col md:flex-row justify-between items-center border-t border-slate-100 dark:border-slate-800">
+  <div class="mb-8 md:mb-0 text-center md:text-left">
+    <div class="text-lg font-bold text-red-900 dark:text-red-500 font-headline mb-2">K.K. Wagh Engineering</div>
+    <p class="text-slate-500 dark:text-slate-400 text-sm tracking-wide font-label max-w-xs">
+      © 2024 K.K. Wagh Institute of Engineering Education and Research. Empowering engineers for over four decades.
+    </p>
+  </div>
+  <div class="flex flex-wrap justify-center gap-8">
+    <a class="text-slate-500 dark:text-slate-400 text-sm font-semibold hover:underline decoration-red-900/30 font-label" href="#">Contact Us</a>
+    <a class="text-slate-500 dark:text-slate-400 text-sm font-semibold hover:underline decoration-red-900/30 font-label" href="#">Privacy Policy</a>
+    <a class="text-slate-500 dark:text-slate-400 text-sm font-semibold hover:underline decoration-red-900/30 font-label" href="#">Student Portal</a>
+    <a class="text-slate-500 dark:text-slate-400 text-sm font-semibold hover:underline decoration-red-900/30 font-label" href="#">Staff Login</a>
+  </div>
+</footer>
+
+<!-- ── Chatbot JavaScript ── -->
+<script>
+  // ── Change this to your deployed backend URL when deploying to Render ──
+  const BACKEND_URL = 'http://localhost:5000';
+
+  function openChat() {
+    document.getElementById('chat-modal').classList.add('open');
+  }
+
+  function closeChat() {
+    document.getElementById('chat-modal').classList.remove('open');
+  }
+
+  function addMessage(text, type) {
+    const messages = document.getElementById('chat-messages');
+    const div = document.createElement('div');
+    div.className = 'msg ' + type;
+    div.textContent = text;
+    messages.appendChild(div);
+    messages.scrollTop = messages.scrollHeight;
+    return div;
+  }
+
+  async function askQuestion(endpoint, label) {
+    // Show user question
+    addMessage(label, 'user');
+
+    // Show loading
+    const loader = addMessage('Thinking...', 'bot loading');
+
+    try {
+      const response = await fetch(`${BACKEND_URL}/${endpoint}`);
+
+      if (!response.ok) throw new Error('Server error');
+
+      const data = await response.json();
+      loader.remove();
+
+      // Build reply text from whichever key is returned
+      const value = data.fees || data.principal || data.hod_computer || data.hod_applied;
+      const labels = {
+        fees: '💰 Fees',
+        principal: '🎓 Principal',
+        'hod-computer': '💻 Computer HOD',
+        'hod-applied': '🔬 Applied Science HOD'
+      };
+      addMessage(`${labels[endpoint]}: ${value}`, 'bot');
+
+    } catch (err) {
+      loader.remove();
+      addMessage('⚠️ Could not connect to server. Please make sure the backend is running.', 'bot error');
+    }
+  }
+</script>
+
+</body>
+</html>
